@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Payment</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<h2>Order Summary</h2>
+<div id="orderDetails"></div>
+<p>Total Amount: Rs.<span id="totalAmount"></span></p>
+<h3>Select Payment Method</h3>
+<button onclick="onlinePayment()">Online Payment</button>
+<button onclick="cashPayment()">Cash Payment</button>
+<div id="paymentSection"></div>
+<br/>
+Enter Table Number (3 digits): <input type="text" id="tableNumber" maxlength="3"/>
+<script>
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+document.getElementById('orderDetails').innerHTML = cart.map(item => `${item.name} x${item.quantity} - Rs.${item.price * item.quantity}`).join('<br/>');
+document.getElementById('totalAmount').innerText = totalAmount;
+
+function onlinePayment() {
+  document.getElementById('paymentSection').innerHTML = `
+    Enter UPI ID: <input type="text" id="upiId" />
+    <button onclick="pay()">Pay</button>
+  `;
+}
+
+function pay() {
+  const upiId = document.getElementById('upiId').value;
+  if (upiId) {
+    alert('Payment request sent. Payment successful.');
+    const orderNumber = Math.floor(Math.random() * 1000000);
+    alert('Your order number is: ' + orderNumber);
+  } else {
+    alert('Please enter UPI ID');
+  }
+}
+
+function cashPayment() {
+  alert('Go to counter, pay cash, and get invoice.');
+}
+</script>
+</body>
+</html>

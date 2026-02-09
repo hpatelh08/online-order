@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Menu and Cart</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+  
+  /* User Profile Header */
+  .user-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1001;
+  }
+  
+  .user-header h1 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .user-profile-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.2);
+    padding: 8px 15px;
+    border-radius: 25px;
+    transition: all 0.3s;
+  }
+  
+  .user-profile:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+  }
+  
+  .order-history-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .order-history-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #667eea;
+  }
+  
+  .user-name {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  /* User Details Modal */
+  .user-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1002;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .user-modal.show {
+    display: flex;
+  }
+  
+  .user-modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s;
+  }
+  
+  @keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .user-modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .user-modal-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: white;
+    margin: 0 auto 15px;
+    font-weight: bold;
+  }
+  
+  .user-modal-info {
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .user-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .user-info-row:last-child {
+    border-bottom: none;
+  }
+  
+  .user-info-label {
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .user-info-value {
+    color: #333;
+  }
+  
+  .close-modal-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .close-modal-btn:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Order History Modal */
+  .order-history-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1002;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .order-history-modal.show {
+    display: flex;
+  }
+  
+  .order-history-content {
+    background: white;
+    border-radius: 15px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .order-history-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .order-history-title {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .close-history-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-history-btn:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  
+  .order-history-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .order-history-list {
+    max-height: 50vh;
+  }
+  
+  .order-history-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    transition: all 0.3s;
+  }
+  
+  .order-history-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  }
+  
+  .empty-history {
+    text-align: center;
+    padding: 30px;
+    color: #999;
+    font-style: italic;
+  }
+  
+  h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 28px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Search box styling */
+  #searchInput {
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    font-size: 16px;
+    border: 2px solid #667eea;
+    border-radius: 30px;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+  }
+  
+  #searchInput:focus {
+    border-color: #764ba2;
+    box-shadow: 0 6px 20px rgba(118, 75, 162, 0.3);
+    transform: translateY(-2px);
+  }
+  #searchDropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    width: calc(100% - 40px);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .search-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+  .search-item:hover {
+    background-color: #f0f0f0;
+  }
+  .search-item-name {
+    font-weight: bold;
+    color: #333;
+  }
+  .search-item-category {
+    font-size: 12px;
+    color: #666;
+    margin-left: 10px;
+  }
+  .search-item-price {
+    float: right;
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  /* Style for category headers */
+  .category-section {
+    margin-bottom: 25px;
+  }
+  
+  .category-header {
+    cursor: pointer;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    margin-bottom: 0;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .category-header::after {
+    content: '▼';
+    transition: transform 0.3s;
+    font-size: 14px;
+  }
+  
+  .category-header:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .category-header.active::after {
+    transform: rotate(180deg);
+  }
+/* Container for items under each category */
+.items-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 10px;
+    display: none;
+    background: rgba(255,255,255,0.5);
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 10px;
+}
+.items-container::-webkit-scrollbar {
+  height: 10px;
+}
+.items-container::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05);
+  border-radius: 10px;
+}
+.items-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+.items-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+.item.highlight {
+    border: 3px solid #4CAF50;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+.item {
+    flex: 0 0 auto;
+    width: 220px;
+    margin-right: 20px;
+    border: none;
+    border-radius: 15px;
+    padding: 20px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+.item-image {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    margin: 10px 0;
+    object-fit: cover;
+}
+.item-image[style*="display: flex"], .item-image[style*="display:flex"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.item-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 5px 0;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+.item-unit {
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 10px 0;
+    font-style: italic;
+}
+.item-price {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 10px 0;
+}
+.quantity-selector {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.quantity-selector:hover {
+    border-color: #667eea;
+    background-color: white;
+}
+
+button {
+    margin-top: 10px;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+}
+
+.buy-now-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+}
+
+.buy-now-btn:hover {
+    box-shadow: 0 6px 15px rgba(245, 87, 108, 0.4);
+}
+
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+}
+
+.add-to-cart-btn:hover {
+    box-shadow: 0 6px 15px rgba(79, 172, 254, 0.4);
+}
+/* Cart styling */
+#cart {
+  background: white;
+  border: none;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+#cart h2 {
+  color: #667eea;
+  margin-bottom: 15px;
+}
+
+#cart-items {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+  transition: all 0.3s;
+}
+
+.cart-item:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  transform: translateX(5px);
+}
+
+.cart-item-info {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+
+.cart-item-name {
+  font-weight: bold;
+  color: #667eea;
+}
+
+.cart-item-category {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}
+
+.cart-item-price {
+  font-weight: bold;
+  color: #764ba2;
+  margin: 0 15px;
+}
+
+.remove-item-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+}
+
+.remove-item-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.5);
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-style: italic;
+}
+
+#totalPrice {
+  font-weight: bold;
+  font-size: 20px;
+  color: #667eea;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 10px;
+  text-align: center;
+}
+#payment-section {
+  display: none;
+  margin-top: 20px;
+  border: 1px dashed #888;
+  padding: 10px;
+  border-radius: 8px;
+}
+#invoice {
+  display: none;
+  border: 2px solid #000;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+</style>
+</head>
+<body>
+
+<!-- User Profile Header -->
+<div class="user-header">
+  <h1>🍽️ Canteen Menu</h1>
+  <div class="user-profile-actions">
+    <button class="order-history-btn" onclick="showOrderHistory()">
+      📋 History
+    </button>
+    <div class="user-profile" onclick="toggleUserModal()">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <div class="user-name" id="headerUserName">Guest</div>
+    </div>
+  </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="user-modal" id="userModal" onclick="closeModalOutside(event)">
+  <div class="user-modal-content" onclick="event.stopPropagation()">
+    <div class="user-modal-header">
+      <div class="user-modal-avatar" id="modalUserAvatar">U</div>
+      <h2 id="modalUserName">Guest User</h2>
+    </div>
+    <div class="user-modal-info">
+      <div class="user-info-row">
+        <span class="user-info-label">Name:</span>
+        <span class="user-info-value" id="modalName">Guest User</span>
+      </div>
+      <div class="user-info-row">
+        <span class="user-info-label">Phone:</span>
+        <span class="user-info-value" id="modalPhone">N/A</span>
+      </div>
+      <div class="user-info-row">
+        <span class="user-info-label">User Type:</span>
+        <span class="user-info-value" id="modalType">Guest</span>
+      </div>
+    </div>
+    <button class="close-modal-btn" onclick="toggleUserModal()">Close</button>
+  </div>
+</div>
+
+<h2>Menu Categories</h2>
+<div style="position: relative;">
+  <input type="text" id="searchInput" placeholder="Search items..." onkeyup="searchItems()" onfocus="searchItems()" />
+  <div id="searchDropdown"></div>
+</div>
+
+<!-- कैटेगरी सेक्शन -->
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('packets')">Packets</div>
+  <div class="items-container" id="packets"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('launch')">launch</div>
+  <div class="items-container" id="launch"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('breakfast')">breakfast</div>
+  <div class="items-container" id="breakfast"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('upvas')">upvas</div>
+  <div class="items-container" id="upvas"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('drinks')">drinks</div>
+  <div class="items-container" id="drinks"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('desserts')">desserts</div>
+  <div class="items-container" id="desserts"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('chocolates')">chocolates</div>
+  <div class="items-container" id="chocolates"></div>
+</div>
+
+<div class="category-section">
+  <div class="category-header" onclick="toggleCategory('farshan')">farshan</div>
+  <div class="items-container" id="farshan"></div>
+</div>
+
+<h2>Your Cart</h2>
+<div id="cart">
+    <div id="cart-items"></div>
+    <p id="totalPrice">Total: Rs.0</p>
+</div>
+
+<button onclick="showPaymentOptions()">Proceed to Payment</button>
+
+<div id="payment-section">
+    <h3>Select Payment Method</h3>
+    <button onclick="onlinePayment()">Online Payment</button>
+    <button onclick="cashPayment()">Cash Payment</button>
+
+    <div id="online-payment" style="display:none; margin-top:10px;">
+        <label for="upiId">Enter your UPI ID:</label>
+        <input type="text" id="upiId" placeholder="e.g., username@bank"/>
+        <button onclick="simulateUPIPayment()">Pay</button>
+        <p id="upiMsg" style="color:green;"></p>
+    </div>
+    <div id="cash-payment-info" style="margin-top:10px; display:none;">
+        <p>Go to counter, give money, and get invoice!</p>
+    </div>
+</div>
+
+<!-- Invoice display -->
+<div id="invoice">
+    <h3>Order Invoice</h3>
+    <p><strong>Name:</strong> <span id="invoice-name"></span></p>
+    <p><strong>Number:</strong> <span id="invoice-number"></span></p>
+    <p><strong>Order Number:</strong> <span id="invoice-order"></span></p>
+    <p><strong>Items:</strong></p>
+    <ul id="invoice-items"></ul>
+    <p><strong>Total:</strong> Rs.<span id="invoice-total"></span></p>
+    <p><strong>Payment Status:</strong> <span id="payment-status"></span></p>
+</div>
+
+<!-- Order History Modal -->
+<div class="order-history-modal" id="orderHistoryModal" onclick="closeHistoryModalOutside(event)">
+  <div class="order-history-content" onclick="event.stopPropagation()">
+    <div class="order-history-header">
+      <h2 class="order-history-title">📋 Order History</h2>
+      <button class="close-history-btn" onclick="hideOrderHistory()">×</button>
+    </div>
+    <div class="order-history-body">
+      <div class="order-history-actions" style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button onclick="exportOrderHistory()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">📤 Export Orders</button>
+      </div>
+      <div id="orderHistoryList" class="order-history-list">
+        <div class="empty-history">No order history yet</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let cartItems = [];
+  let totalPrice = 0;
+  let orderNumber = 1000;
+  let userName = '';
+  let userNumber = '';
+  let userType = '';
+  
+  // Get user details from URL parameters (passed from login page)
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    userName = urlParams.get('name') || 'Guest User';
+    userNumber = urlParams.get('phone') || 'N/A';
+    userType = urlParams.get('type') || 'Guest';
+    
+    console.log('User logged in:', { name: userName, phone: userNumber, type: userType });
+    
+    // Update UI with user details
+    updateUserDisplay();
+  });
+  
+  // Update user display in header and modal
+  function updateUserDisplay() {
+    // Get first letter of name for avatar
+    const firstLetter = userName.charAt(0).toUpperCase();
+    
+    // Update header
+    document.getElementById('userAvatar').textContent = firstLetter;
+    document.getElementById('headerUserName').textContent = userName.split(' ')[0]; // First name only
+    
+    // Update modal
+    document.getElementById('modalUserAvatar').textContent = firstLetter;
+    document.getElementById('modalUserName').textContent = userName;
+    document.getElementById('modalName').textContent = userName;
+    document.getElementById('modalPhone').textContent = userNumber;
+    document.getElementById('modalType').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+  }
+  
+  // Toggle user modal
+  function toggleUserModal() {
+    const modal = document.getElementById('userModal');
+    modal.classList.toggle('show');
+  }
+  
+  // Close modal when clicking outside
+  function closeModalOutside(event) {
+    if (event.target.id === 'userModal') {
+      toggleUserModal();
+    }
+  }
+  
+  let productsData = {
+    "packets": {
+      "alloo sev": { "name": "Alloo Sev", "price": 25, "quantity": 0 },
+      "bingo": { "name": "Bingo", "price": 25, "quantity": 0 },
+      "bounce": { "name": "Bounce", "price": 20, "quantity": 0 },
+      "crunchex": { "name": "Crunchex", "price": 20, "quantity": 0 },
+      "doritoz": { "name": "Doritoz", "price": 30, "quantity": 0 },
+      "good day": { "name": "Good Day", "price": 20, "quantity": 0 },
+      "hide & seek": { "name": "Hide & Seek", "price": 25, "quantity": 0 },
+      "jimjam": { "name": "Jimjam", "price": 20, "quantity": 0 },
+      "kurkure": { "name": "KurKure", "price": 20, "quantity": 0 },
+      "lays": { "name": "Lays", "price": 20, "quantity": 0 },
+      "mad angel": { "name": "Mad Angel", "price": 25, "quantity": 0 },
+      "moms magic": { "name": "Moms Magic", "price": 20, "quantity": 0 },
+      "nacoz": { "name": "Nacoz", "price": 30, "quantity": 0 },
+      "sev mamra": { "name": "Sev Mamra", "price": 30, "quantity": 0 },
+      "sing bujiya": { "name": "Sing Bujiya", "price": 30, "quantity": 0 },
+      "tiger": { "name": "Tiger", "price": 20, "quantity": 0 },
+      "unibic": { "name": "Unibic", "price": 25, "quantity": 0 },
+      "wafers": { "name": "Wafers", "price": 10, "quantity": 0 }
+    },
+    "launch": {
+      "sabji (bhindi)": { "name": "Sabji (Bhindi)", "price": 70, "quantity": 0 },
+      "sabji (allo)": { "name": "Sabji (Allo)", "price": 80, "quantity": 0 },
+      "puri": { "name": "Puri", "price": 60, "quantity": 0 },
+      "chapati": { "name": "Chapati", "price": 50, "quantity": 0 },
+      "papad": { "name": "Papad", "price": 10, "quantity": 0 },
+      "salad": { "name": "Salad", "price": 30, "quantity": 0 },
+      "rice": { "name": "Rice", "price": 40, "quantity": 0 },
+      "dal": { "name": "Dal", "price": 50, "quantity": 0 },
+      "chhas": { "name": "Chhas", "price": 20, "quantity": 0 },
+      "khichdi": { "name": "Khichdi", "price": 40, "quantity": 0 }
+    },
+    "breakfast": {
+      "poha": { "name": "Poha", "price": 30, "quantity": 0 },
+      "idli": { "name": "Idli", "price": 30, "quantity": 0 },
+      "vada": { "name": "Vada", "price": 25, "quantity": 0 },
+      "thepla": { "name": "Thepla", "price": 40, "quantity": 0 },
+      "khakhra": { "name": "Khakhra", "price": 20, "quantity": 0 },
+      "tea": { "name": "Tea", "price": 10, "quantity": 0 },
+      "coffee": { "name": "Coffee", "price": 15, "quantity": 0 },
+      "bread butter": { "name": "Bread Butter", "price": 25, "quantity": 0 },
+      "curd": { "name": "Curd", "price": 20, "quantity": 0 },
+      "paratha": { "name": "Paratha", "price": 35, "quantity": 0 },
+      "vadapav": { "name": "Vadapav", "price": 20, "quantity": 0 },
+      "bread pakoda": { "name": "Bread Pakoda", "price": 30, "quantity": 0 },
+      "bhajiya": { "name": "Bhajiya", "price": 25, "quantity": 0 },
+      "bread (allo)": { "name": "Bread (Allo)", "price": 20, "quantity": 0 },
+      "dhokla": { "name": "Dhokla", "price": 25, "quantity": 0 }
+    },
+    "upvas": {
+      "banana wafer": { "name": "Banana Wafer", "price": 15, "quantity": 0 },
+      "chevdo": { "name": "Chevdo", "price": 20, "quantity": 0 },
+      "sabudana khichdi": { "name": "Sabudana Khichdi", "price": 40, "quantity": 0 }
+    },
+    "drinks": {
+      "campa": { "name": "Campa", "price": 25, "quantity": 0 },
+      "coco poco": { "name": "Coco Poco", "price": 15, "quantity": 0 },
+      "coco cola": { "name": "Coco Cola", "price": 25, "quantity": 0 },
+      "mango juice": { "name": "Mango Juice", "price": 30, "quantity": 0 },
+      "fanta": { "name": "Fanta", "price": 20, "quantity": 0 },
+      "sprite": { "name": "Sprite", "price": 25, "quantity": 0 },
+      "pepsi": { "name": "Pepsi", "price": 25, "quantity": 0 },
+      "mirinda": { "name": "Mirinda", "price": 20, "quantity": 0 },
+      "mountain dew": { "name": "Mountain Dew", "price": 25, "quantity": 0 },
+      "water": { "name": "Water", "price": 10, "quantity": 0 },
+      "nestea": { "name": "Nestea", "price": 20, "quantity": 0 },
+      "7 up": { "name": "7 Up", "price": 25, "quantity": 0 },
+      "limca": { "name": "Limca", "price": 25, "quantity": 0 },
+      "thumbs up": { "name": "Thumbs Up", "price": 25, "quantity": 0 },
+      "frooti": { "name": "Frooti", "price": 20, "quantity": 0 },
+      "maaza": { "name": "Maaza", "price": 20, "quantity": 0 }
+    },
+    "desserts": {
+      "shukhadi": { "name": "Shukhadi", "price": 25, "quantity": 0 },
+      "mohanthal": { "name": "Mohanthal", "price": 30, "quantity": 0 },
+      "sutarfeni": { "name": "Sutarfeni", "price": 35, "quantity": 0 },
+      "gajar halvo": { "name": "Gajar Halvo", "price": 40, "quantity": 0 },
+      "gulab jamun": { "name": "Gulab Jamun", "price": 30, "quantity": 0 },
+      "rasgulla": { "name": "Rasgulla", "price": 30, "quantity": 0 },
+      "kaju katri": { "name": "Kaju Katri", "price": 50, "quantity": 0 },
+      "penda": { "name": "Penda", "price": 20, "quantity": 0 },
+      "kheer": { "name": "Kheer", "price": 40, "quantity": 0 }
+    },
+    "chocolates": {
+      "milka": { "name": "Milka", "price": 30, "quantity": 0 },
+      "oreo": { "name": "Oreo", "price": 20, "quantity": 0 },
+      "kitkat": { "name": "Kitkat", "price": 30, "quantity": 0 },
+      "kinder joy": { "name": "Kinder Joy", "price": 40, "quantity": 0 },
+      "bounty": { "name": "Bounty", "price": 35, "quantity": 0 },
+      "dairy milk": { "name": "Dairy Milk", "price": 20, "quantity": 0 },
+      "hersheys": { "name": "Hersheys", "price": 40, "quantity": 0 },
+      "snickers": { "name": "Snickers", "price": 35, "quantity": 0 },
+      "amul dark chocolate": { "name": "Amul Dark Chocolate", "price": 40, "quantity": 0 },
+      "perk": { "name": "Perk", "price": 20, "quantity": 0 },
+      "silk": { "name": "Silk", "price": 30, "quantity": 0 },
+      "silk oreo": { "name": "Silk Oreo", "price": 35, "quantity": 0 },
+      "5 star": { "name": "5 Star", "price": 25, "quantity": 0 }
+    },
+    "farshan": {
+      "bateka puri": { "name": "Bateka Puri", "price": 30, "quantity": 0 },
+      "dhokla": { "name": "Dhokla", "price": 25, "quantity": 0 },
+      "khaman": { "name": "Khaman", "price": 20, "quantity": 0 },
+      "fafda": { "name": "Fafda", "price": 25, "quantity": 0 },
+      "gathiya": { "name": "Gathiya", "price": 20, "quantity": 0 },
+      "khandvi": { "name": "Khandvi", "price": 30, "quantity": 0 },
+      "patra": { "name": "Patra", "price": 30, "quantity": 0 },
+      "samosa": { "name": "Samosa", "price": 15, "quantity": 0 },
+      "green chatni": { "name": "Green Chatni", "price": 10, "quantity": 0 },
+      "red chatni": { "name": "Red Chatni", "price": 10, "quantity": 0 },
+      "khamni": { "name": "Khamni", "price": 25, "quantity": 0 },
+      "chinese samosa": { "name": "Chinese Samosa", "price": 30, "quantity": 0 },
+      "idada": { "name": "Idada", "price": 15, "quantity": 0 }
+    }
+  }; // Store data from JSON
+
+  // Define serving units for items
+  const itemUnits = {
+    // Bowl items
+    'sabji (bhindi)': '1 Bowl',
+    'sabji (allo)': '1 Bowl',
+    'curd': '1 Bowl',
+    'salad': '1 Bowl',
+    'green chatni': '1 Bowl',
+    'red chatni': '1 Bowl',
+    'rice': '1 Bowl',
+    'dal': '1 Bowl',
+    'khichdi': '1 Bowl',
+    'gajar halvo': '1 Bowl',
+    'kheer': '1 Bowl',
+    
+    // Plate items
+    'poha': '1 Plate',
+    'sabudana khichdi': '1 Plate',
+    
+    // 10 Piece items
+    'puri': '10 Piece',
+    
+    // 2 Piece items
+    'idli': '2 Piece',
+    'vada': '2 Piece',
+    'thepla': '2 Piece',
+    'khakhra': '2 Piece',
+    'bread butter': '2 Piece',
+    'paratha': '2 Piece',
+    
+    // 1 Piece items
+    'vadapav': '1 Piece',
+    'bread pakoda': '1 Piece',
+    'bread (allo)': '1 Piece',
+    'samosa': '1 Piece',
+    'chinese samosa': '1 Piece',
+    
+    // 3 Piece items
+    'shukhadi': '3 Piece',
+    'mohanthal': '3 Piece',
+    'gulab jamun': '3 Piece',
+    'rasgulla': '3 Piece',
+    'kaju katri': '3 Piece',
+    'penda': '3 Piece',
+    'sutarfeni': '3 Piece',
+    'idada': '3 Piece',
+    
+    // 100gm items
+    'bhajiya': '100gm',
+    'dhokla': '100gm',
+    'khaman': '100gm',
+    'bateka puri': '100gm',
+    'fafda': '100gm',
+    'gathiya': '100gm',
+    'khandvi': '100gm',
+    'patra': '100gm',
+    'banana wafer': '100gm',
+    'khamni': '100gm'
+  };
+
+  // Function to get unit for an item
+  function getItemUnit(itemName) {
+    const itemKey = itemName.toLowerCase();
+    return itemUnits[itemKey] || '1 Piece'; // Default to 1 Piece if not found
+  }
+
+  // Sample data for items in each category
+  const itemsData = {
+    packets: ['Alloo Sev', 'Bingo', 'Bounce', 'Crunchex', 'Doritoz', 'Good Day', 'Hide & Seek', 'Jimjam', 'KurKure', 'Lays', 'Mad Angel', 'Moms Magic', 'Nacoz', 'Sev Mamra', 'Sing Bujiya', 'Tiger', 'Unibic', 'Wafers'],
+    launch: ['Sabji (Bhindi)', 'Sabji (Allo)', 'Puri','Chapati', 'Papad', 'Salad', 'Rice', 'Dal', 'Chhas', 'Khichdi'],
+    breakfast: ['Poha', 'Idli','Vada','Thepla', 'Khakhra', 'Tea', 'Coffee', 'Bread Butter', 'Curd','Paratha', 'Vadapav', 'Bread Pakoda', 'Bhajiya', 'Bread (Allo)', 'Dhokla'],
+    upvas: ['Banana Wafer', 'Chevdo', 'Sabudana Khichdi'],
+    drinks: ['Campa', 'Coco Poco', 'Coco Cola', 'Mango Juice', 'Fanta', 'Sprite', 'Pepsi', 'Mirinda', 'Mountain Dew', 'Water', 'Nestea','7 Up', 'Limca','Thumbs Up','Frooti','Maaza'],
+    desserts: ['Shukhadi', 'Mohanthal', 'Sutarfeni', 'Gajar Halvo', 'Gulab Jamun', 'Rasgulla', 'Kaju Katri', 'Penda', 'Kheer'],
+    chocolates: ['Milka', 'Oreo', 'Kitkat', 'Kinder Joy', 'Bounty', 'Dairy Milk', 'Hersheys', 'Snickers', 'Amul Dark Chocolate', 'Perk', 'Silk', 'Silk Oreo', '5 Star'],
+    farshan: ['Bateka Puri','Dhokla', 'Khaman', 'Fafda', 'Gathiya', 'Khandvi', 'Patra', 'Samosa', 'Green Chatni','Red Chatni','Khamni', 'Chinese Samosa','Idada']
+  };
+
+  // Load data from JSON file
+  async function loadProductData() {
+    try {
+      const response = await fetch('../backend/data.json');
+      if (!response.ok) {
+        throw new Error('Failed to load data.json');
+      }
+      const data = await response.json();
+      
+      console.log('Loaded data:', data);
+      
+      // Convert to a map for easy lookup
+      productsData = {};
+      for (const category in data) {
+        const categoryKey = category.toLowerCase();
+        productsData[categoryKey] = {};
+        data[category].forEach(item => {
+          const itemKey = item.name.toLowerCase();
+          productsData[categoryKey][itemKey] = item;
+        });
+      }
+      
+      console.log('Products data processed:', productsData);
+      generateItems();
+    } catch (error) {
+      console.error('Error loading product data:', error);
+      alert('Failed to load prices from data.json. Using default prices.');
+      generateItems(); // Generate with default prices if loading fails
+    }
+  }
+
+  // Function to get price for an item
+  function getItemPrice(category, itemName) {
+    const categoryKey = category.toLowerCase();
+    const itemKey = itemName.toLowerCase().trim();
+    
+    // Direct match
+    if (productsData[categoryKey] && productsData[categoryKey][itemKey]) {
+      return productsData[categoryKey][itemKey].price;
+    }
+    
+    // Try fuzzy matching - remove spaces and special chars
+    if (productsData[categoryKey]) {
+      for (const key in productsData[categoryKey]) {
+        const normalizedKey = key.replace(/[\s\(\)]/g, '').toLowerCase();
+        const normalizedSearch = itemKey.replace(/[\s\(\)]/g, '').toLowerCase();
+        if (normalizedKey === normalizedSearch) {
+          return productsData[categoryKey][key].price;
+        }
+      }
+    }
+    
+    console.log(`Price not found for: ${category} - ${itemName}`);
+    return 20; // Default price if not found
+  }
+
+  // Generate items dynamically
+  function generateItems() {
+    for (const category in itemsData) {
+      const container = document.getElementById(category);
+      container.innerHTML = '';
+      itemsData[category].forEach(itemName => {
+        if (!itemName) return; // Skip undefined items
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+
+        // Use actual image path from images folder
+        const imgFileName = itemName.replace(/\s+/g, '').replace(/[()]/g, '').toLowerCase() + '.jpg';
+        const imgPath = '../images/' + imgFileName;
+        
+        // Get price from data.json
+        const price = getItemPrice(category, itemName);
+        const unit = getItemUnit(itemName);
+
+         itemDiv.innerHTML = `
+          <p class="item-name">${itemName}</p>
+          <p class="item-unit">${unit}</p>
+          <img src="${imgPath}" alt="${itemName}" class="item-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="display:block;"/>
+          <div class="item-image" style="display:none;">🍽️ ${itemName}</div>
+          <p class="item-price">Rs.${price}</p>
+          <select class="quantity-selector" id="qty-${category}-${itemName.replace(/\s+/g, '')}">
+            <option value="1">Qty: 1</option>
+            <option value="2">Qty: 2</option>
+            <option value="3">Qty: 3</option>
+            <option value="4">Qty: 4</option>
+            <option value="5">Qty: 5</option>
+            <option value="6">Qty: 6</option>
+            <option value="7">Qty: 7</option>
+            <option value="8">Qty: 8</option>
+            <option value="9">Qty: 9</option>
+            <option value="10">Qty: 10</option>
+          </select>
+          <button class="add-to-cart-btn" onclick="addToCart('${category}', '${itemName}', ${price})">🛒 Add to Cart</button>
+          <button class="buy-now-btn" onclick="buyNow('${category}', '${itemName}', ${price})">⚡ Buy Now</button>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+  }
+
+  function toggleCategory(id) {
+    const el = document.getElementById(id);
+    const header = event.target;
+    
+    if (el.style.display === 'flex') {
+      el.style.display = 'none';
+      header.classList.remove('active');
+    } else {
+      el.style.display = 'flex';
+      header.classList.add('active');
+    }
+  }
+
+  function searchItems() {
+    const input = document.getElementById('searchInput').value.toLowerCase().trim();
+    const dropdown = document.getElementById('searchDropdown');
+    
+    if (input === '') {
+      dropdown.style.display = 'none';
+      return;
+    }
+    
+    // Search through all items
+    let results = [];
+    for (const category in itemsData) {
+      itemsData[category].forEach(itemName => {
+        if (itemName && itemName.toLowerCase().includes(input)) {
+          const price = getItemPrice(category, itemName);
+          const unit = getItemUnit(itemName);
+          results.push({
+            name: itemName,
+            category: category,
+            price: price,
+            unit: unit
+          });
+        }
+      });
+    }
+    
+    // Display results in dropdown
+    if (results.length > 0) {
+      dropdown.innerHTML = '';
+      results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'search-item';
+        div.innerHTML = `
+          <span class="search-item-name">${item.name}</span>
+          <span class="search-item-category">(${item.category})</span>
+          <span class="search-item-price">Rs.${item.price}</span>
+          <br/>
+          <small style="color: #999;">${item.unit}</small>
+        `;
+        div.onclick = () => {
+          // Remove previous highlights
+          document.querySelectorAll('.item.highlight').forEach(el => {
+            el.classList.remove('highlight');
+          });
+          
+          // Scroll to category and show item
+          const categoryElement = document.getElementById(item.category);
+          if (categoryElement) {
+            categoryElement.style.display = 'flex';
+            
+            // Find the specific item card
+            setTimeout(() => {
+              const items = categoryElement.querySelectorAll('.item');
+              items.forEach(itemCard => {
+                const itemNameEl = itemCard.querySelector('.item-name');
+                if (itemNameEl && itemNameEl.textContent.trim() === item.name) {
+                  // Highlight the item
+                  itemCard.classList.add('highlight');
+                  // Scroll to the specific item
+                  itemCard.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                  
+                  // Remove highlight after 3 seconds
+                  setTimeout(() => {
+                    itemCard.classList.remove('highlight');
+                  }, 3000);
+                }
+              });
+            }, 100);
+          }
+          dropdown.style.display = 'none';
+          document.getElementById('searchInput').value = '';
+        };
+        dropdown.appendChild(div);
+      });
+      dropdown.style.display = 'block';
+    } else {
+      dropdown.innerHTML = '<div class="search-item">No items found</div>';
+      dropdown.style.display = 'block';
+    }
+  }
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+    const searchInput = document.getElementById('searchInput');
+    const dropdown = document.getElementById('searchDropdown');
+    if (searchInput && dropdown && !searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  function addToCart(category, itemName, price) {
+    const qtySelector = document.getElementById(`qty-${category}-${itemName.replace(/\s+/g, '')}`);
+    const quantity = parseInt(qtySelector.value);
+    
+    for (let i = 0; i < quantity; i++) {
+      cartItems.push({category, itemName, price});
+    }
+    updateCartDisplay();
+    
+    // Show feedback
+    alert(`${quantity} x ${itemName} added to cart!`);
+    
+    // Reset quantity to 1 after adding
+    qtySelector.value = '1';
+  }
+
+  function buyNow(category, itemName, price) {
+    const qtySelector = document.getElementById(`qty-${category}-${itemName.replace(/\s+/g, '')}`);
+    const quantity = parseInt(qtySelector.value);
+    
+    // Clear cart and add only this item
+    cartItems = [];
+    for (let i = 0; i < quantity; i++) {
+      cartItems.push({category, itemName, price});
+    }
+    updateCartDisplay();
+    
+    // Reset quantity to 1
+    qtySelector.value = '1';
+    
+    // Scroll to cart and show payment options
+    document.getElementById('cart').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      showPaymentOptions();
+    }, 500);
+  }
+
+  function updateCartDisplay() {
+    const cartDiv = document.getElementById('cart-items');
+    cartDiv.innerHTML = '';
+    let total = 0;
+    
+    if (cartItems.length === 0) {
+      cartDiv.innerHTML = '<div class="empty-cart">🛒 Your cart is empty</div>';
+      document.getElementById('totalPrice').textContent = 'Total: Rs.0';
+      totalPrice = 0;
+      return;
+    }
+    
+    // Group items by name and category
+    const groupedItems = {};
+    cartItems.forEach(item => {
+      const key = `${item.itemName}|${item.category}`;
+      if (!groupedItems[key]) {
+        groupedItems[key] = {
+          ...item,
+          count: 0
+        };
+      }
+      groupedItems[key].count++;
+    });
+    
+    // Display grouped items
+    Object.values(groupedItems).forEach((item, index) => {
+      total += item.price * item.count;
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.count > 1 ? item.count + ' x ' : ''}${item.itemName}</div>
+          <div class="cart-item-category">${item.category}</div>
+        </div>
+        <div class="cart-item-price">Rs.${item.price * item.count}</div>
+        <button class="remove-item-btn" onclick="removeFromCart('${item.itemName}', '${item.category}')">🗑️ Remove</button>
+      `;
+      cartDiv.appendChild(div);
+    });
+    
+    document.getElementById('totalPrice').textContent = `Total: Rs.${total}`;
+    totalPrice = total;
+  }
+  
+  // Remove item from cart (by name and category)
+  function removeFromCart(itemName, category) {
+    // Find and remove one instance of the item
+    const index = cartItems.findIndex(item => item.itemName === itemName && item.category === category);
+    if (index >= 0) {
+      const removedItem = cartItems[index];
+      cartItems.splice(index, 1);
+      updateCartDisplay();
+      
+      // Show feedback
+      alert(`${removedItem.itemName} removed from cart!`);
+    }
+  }
+
+  function showPaymentOptions() {
+    if (cartItems.length === 0) {
+      alert('Please add items to cart.');
+      return;
+    }
+    document.getElementById('payment-section').style.display = 'block';
+    document.getElementById('online-payment').style.display = 'none';
+    document.getElementById('cash-payment-info').style.display = 'none';
+    document.getElementById('upiMsg').textContent = '';
+    document.getElementById('upiId').value = '';
+  }
+
+  function onlinePayment() {
+    document.getElementById('online-payment').style.display = 'block';
+    document.getElementById('cash-payment-info').style.display = 'none';
+  }
+
+  function cashPayment() {
+    generateOrder('Cash');
+    document.getElementById('online-payment').style.display = 'none';
+    document.getElementById('cash-payment-info').style.display = 'block';
+  }
+
+  function simulateUPIPayment() {
+    const upiId = document.getElementById('upiId').value.trim();
+    if (upiId === '') {
+      alert('Please enter your UPI ID.');
+      return;
+    }
+    document.getElementById('upiMsg').textContent = `Payment of Rs.${totalPrice} successful via UPI ID: ${upiId}`;
+    generateOrder('Online');
+  }
+
+  function generateOrder(mode) {
+    // Generate order number in format: DDMMXXXX (Date + Month + Time-based 4 digits)
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');     // DD (01-31)
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // MM (01-12)
+    
+    // Generate unique 4 digits using: HH + MM + SS (last 2 digits of seconds + random)
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+    
+    // Combine time elements to create unique number
+    const uniqueNum = (hours + minutes + seconds + milliseconds).slice(-4); // Last 4 digits
+    
+    const orderNum = day + month + uniqueNum; // Format: DDMMXXXX (8 digits total)
+    
+    document.getElementById('invoice').style.display = 'block';
+    document.getElementById('invoice-name').textContent = userName;
+    document.getElementById('invoice-number').textContent = userNumber;
+    document.getElementById('invoice-order').textContent = orderNum;
+
+    const list = document.getElementById('invoice-items');
+    list.innerHTML = '';
+    cartItems.forEach(i => {
+      const li = document.createElement('li');
+      li.textContent = `${i.itemName} (${i.category}) - Rs.${i.price}`;
+      list.appendChild(li);
+    });
+    document.getElementById('invoice-total').textContent = totalPrice;
+    document.getElementById('payment-status').textContent = 'Paid via ' + mode;
+
+    // Save order to history
+    const orderData = {
+      orderNumber: orderNum,
+      timestamp: now.toISOString(),
+      items: [...cartItems],
+      total: totalPrice,
+      paymentMode: mode,
+      customerName: userName,
+      customerPhone: userNumber
+    };
+    
+    saveOrderToHistory(orderData);
+
+    // Reset cart
+    cartItems = [];
+    totalPrice = 0;
+    updateCartDisplay();
+
+    // Hide payment section
+    document.getElementById('payment-section').style.display = 'none';
+  }
+
+  // Initialize the items
+  generateItems();
+  
+  // Load order history when page loads
+  window.addEventListener('DOMContentLoaded', loadOrderHistory);
+  
+  // Load order history from backend
+  function loadOrderHistory() {
+    // Get phone number from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const userPhone = urlParams.get('phone') || '';
+    
+    if (!userPhone) {
+      displayOrderHistory([]);
+      return;
+    }
+    
+    // Fetch orders from backend
+    fetch(`/api/orders/${encodeURIComponent(userPhone)}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Loaded orders from backend:', data);
+        displayOrderHistory(data.orders || []);
+      })
+      .catch(e => {
+        console.error('Error loading order history from backend:', e);
+        // Fallback to localStorage
+        try {
+          const localHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+          displayOrderHistory(localHistory);
+        } catch (localErr) {
+          console.error('Error loading local order history:', localErr);
+          displayOrderHistory([]);
+        }
+      });
+  }
+  
+  // Save order to history (backend)
+  function saveOrderToHistory(orderData) {
+    // Get phone number from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const userPhone = urlParams.get('phone') || '';
+    
+    if (!userPhone) {
+      console.warn('No phone number found, cannot save order');
+      return;
+    }
+    
+    // Send order to backend
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        phoneNumber: userPhone,
+        orderData: orderData
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        console.log('Order saved successfully to backend');
+        // Reload order history to show new order
+        loadOrderHistory();
+      } else {
+        console.error('Error saving order to backend:', data.error);
+        // Fallback to localStorage
+        saveToLocalHistory(orderData);
+      }
+    })
+    .catch(e => {
+      console.error('Error saving order to backend:', e);
+      // Fallback to localStorage
+      saveToLocalHistory(orderData);
+    });
+  }
+  
+  // Fallback function to save to localStorage
+  function saveToLocalHistory(orderData) {
+    try {
+      const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+      history.unshift(orderData); // Add to beginning
+      // Keep only last 50 orders
+      if (history.length > 50) {
+        history.pop();
+      }
+      localStorage.setItem('orderHistory', JSON.stringify(history));
+      console.log('Order saved to localStorage as fallback');
+    } catch (e) {
+      console.error('Error saving order to localStorage:', e);
+    }
+  }
+  
+  // Display order history
+  function displayOrderHistory(history) {
+    const container = document.getElementById('orderHistoryList');
+    
+    if (!history || history.length === 0) {
+      container.innerHTML = '<div class="empty-history">No order history yet</div>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    history.forEach(order => {
+      const orderDiv = document.createElement('div');
+      orderDiv.className = 'order-history-item';
+      
+      // Group items in order
+      const itemCounts = {};
+      order.items.forEach(item => {
+        const key = `${item.itemName}|${item.category}`;
+        if (!itemCounts[key]) {
+          itemCounts[key] = {
+            ...item,
+            count: 0
+          };
+        }
+        itemCounts[key].count++;
+      });
+      
+      const itemsHtml = Object.values(itemCounts).map(item => 
+        `<div style="font-size: 14px; margin: 5px 0;">
+          <span style="font-weight: bold; color: #667eea;">${item.count > 1 ? item.count + ' x ' : ''}${item.itemName}</span>
+          <span style="color: #999; font-size: 12px;"> (${item.category})</span>
+          <span style="float: right; color: #764ba2; font-weight: bold;">Rs.${item.price * item.count}</span>
+        </div>`
+      ).join('');
+      
+      orderDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #e0e0e0;">
+          <div>
+            <div style="font-weight: bold; color: #333;">Order #${order.orderNumber}</div>
+            <div style="font-size: 12px; color: #999;">${new Date(order.timestamp).toLocaleString()}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: bold; color: #764ba2; font-size: 18px;">Rs.${order.total}</div>
+            <div style="font-size: 12px; color: #666;">${order.paymentMode}</div>
+          </div>
+        </div>
+        <div style="margin-bottom: 10px;">
+          ${itemsHtml}
+        </div>
+        <div style="font-size: 12px; color: #999; text-align: right;">
+          ${order.items.length} item${order.items.length !== 1 ? 's' : ''}
+        </div>
+      `;
+      
+      container.appendChild(orderDiv);
+    });
+  }
+  
+  // Show order history modal
+  function showOrderHistory() {
+    loadOrderHistory(); // Reload to get latest orders
+    document.getElementById('orderHistoryModal').classList.add('show');
+    console.log('Showing order history modal');
+  }
+  
+  // Hide order history modal
+  function hideOrderHistory() {
+    document.getElementById('orderHistoryModal').classList.remove('show');
+  }
+  
+  // Export order history as JSON file
+  function exportOrderHistory() {
+    try {
+      const history = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+      if (history.length === 0) {
+        alert('No order history to export!');
+        return;
+      }
+      
+      const dataStr = JSON.stringify(history, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `canteen-orders-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert(`Exported ${history.length} orders successfully!`);
+    } catch (e) {
+      console.error('Error exporting order history:', e);
+      alert('Error exporting order history!');
+    }
+  }
+  
+  // Close modal when clicking outside
+  function closeHistoryModalOutside(event) {
+    if (event.target.id === 'orderHistoryModal') {
+      hideOrderHistory();
+    }
+  }
+</script>
+
+</body>
+</html>

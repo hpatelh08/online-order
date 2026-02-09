@@ -1,0 +1,34 @@
+{
+  "teachers": [
+    {
+      "phone": "9876543210",
+      "name": "Dr. Rajesh Kumar",
+      "department": "Computer Science"
+    },
+    {
+      "phone": "9123456789",
+      "name": "Prof. Priya Sharma",
+      "department": "Information Technology"
+    },
+    {
+      "phone": "9988776655",
+      "name": "Dr. Amit Patel",
+      "department": "Electronics"
+    },
+    {
+      "phone": "9978945632",
+      "name": "Pratik Patel",
+      "department": "BCA"
+    },
+    {
+      "phone": "9876512340",
+      "name": "Prof. Sneha Desai",
+      "department": "Mechanical Engineering"
+    },
+    {
+      "phone": "9123498765",
+      "name": "Dr. Rahul Shah",
+      "department": "Civil Engineering"
+    }
+  ]
+}

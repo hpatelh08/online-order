@@ -1,0 +1,77 @@
+{
+  "students": [
+    {
+      "enrollment": "123456789012",
+      "name": "Raj Patel",
+      "department": "Computer Science",
+      "phone": "9876543210"
+    },
+    {
+      "enrollment": "230606302032",
+      "name": "Hetu Patel",
+      "department": "B.Sc. IT",
+      "phone": "9913368407"
+    },
+    {
+      "enrollment": "230606301079",
+      "name": "Haresh bharwad",
+      "department": "BCA",
+      "phone": "8758128324"
+    },
+    {
+      "enrollment": "230606301040",
+      "name": "NEEL JIYANI",
+      "department": "Computer Science",
+      "phone": "8527413698"
+    },
+    {
+      "enrollment": "230606302028",
+      "name": "Tanvi Patel",
+      "department": "Information Technology",
+      "phone": "8160858355"
+    },
+    {
+      "enrollment": "230606302029",
+      "name": "Neel Shah",
+      "department": "BBA",
+      "phone": "6351617981"
+    },
+    {
+      "enrollment": "230606302037",
+      "name": "Shankar parth",
+      "department": "pharmacy",
+      "phone": "8567412565"
+    },
+    {
+      "enrollment": "987654321098",
+      "name": "Priya Shah",
+      "department": "Information Technology",
+      "phone": "9123456789"
+    },
+    {
+      "enrollment": "456789012345",
+      "name": "Amit Kumar",
+      "department": "Mechanical Engineering",
+      "phone": "9988776655"
+    },
+    {
+      "enrollment": "111222333444",
+      "name": "Sneha Desai",
+      "department": "Civil Engineering",
+      "phone": "9876512340"
+    },
+    
+    {
+      "enrollment": "555666777888",
+      "name": "Rahul Sharma",
+      "department": "Electronics",
+      "phone": "9123498765"
+    },
+    {
+      "enrollment": "999888777666",
+      "name": "Rohan Mehta",
+      "department": "Computer Engineering",
+      "phone": "9876543211"
+    }
+  ]
+}
